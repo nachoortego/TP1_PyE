@@ -10,9 +10,18 @@ attach(datos)
 ######################
 # Renombrar columnas #
 ######################
-colnames(datos) <- c("id","altura","diametro","inclinacion","edad","tiempo",
-										 "brotes","especie","follaje","origen","atracnosis",
-										 "roya","manchas","ampollas")
+colnames(datos)[5] <- "cant_integrantes"
+colnames(datos)[10] <- "cant_menores"
+colnames(datos)[95:103] <- "espacios_pc" #espacios de practicas corporales y esparcimiento
+colnames(datos)[104] <- "uso_espacios_pc"
+colnames(datos)[105:108] <- "espacios_verdes"
+colnames(datos)[109] <- "uso_espacios_verdes"
+colnames(datos)[110] <- "frec_tp" #frecuencia del transporte publico
+colnames(datos)[112] <- "acceso_bp" #tiene acceso al uso de bicicletas publicas
+
+
+#<- "cant_menores"
+
 
 ###################
 # Modificar datos #
