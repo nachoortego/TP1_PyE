@@ -12,15 +12,17 @@ attach(datos)
 ######################
 colnames(datos)[5] <- "cant_integrantes"
 colnames(datos)[10] <- "cant_menores"
-colnames(datos)[95:103] <- "espacios_pc" #espacios de practicas corporales y esparcimiento
+colnames(datos)[95:103] <- paste0("espacio_pc_", 1:9) #espacios de practicas corporales y esparcimiento
 colnames(datos)[104] <- "uso_espacios_pc"
-colnames(datos)[105:108] <- "espacios_verdes"
+colnames(datos)[105:108] <- paste0("espacio_verde_", 1:4)
 colnames(datos)[109] <- "uso_espacios_verdes"
 colnames(datos)[110] <- "frec_tp" #frecuencia del transporte publico
 colnames(datos)[112] <- "acceso_bp" #tiene acceso al uso de bicicletas publicas
 
+espacios_pc <- datos[, paste0("espacio_pc_", 1:9)]
+espacios_verdes <- datos[, paste0("espacio_verde_", 1:9)]
 
-
+# Creo la columna de acceso
 acceso_espacios_pc <- apply(espacios_pc, 1, function(fila) {
   if ("No existen tales espacios" %in% fila) {
     return("No tiene acceso")
@@ -31,11 +33,11 @@ acceso_espacios_pc <- apply(espacios_pc, 1, function(fila) {
   }
 })
 
-tabla_acceso_espacios <- table(acceso_espacios_pc)
-porcentajes <- round(100 * tabla_acceso_espacios / sum(tabla_acceso_espacios), 1)
-labels <- paste(names(tabla_acceso_espacios), "  \n       ", porcentajes, "%      ", sep = "")
+tabla_acceso_espacios_pc <- table(acceso_espacios_pc)
+porcentajes <- round(100 * tabla_acceso_espacios_pc / sum(tabla_acceso_espacios_pc), 1)
+labels <- paste(names(tabla_acceso_espacios_pc), "  \n       ", porcentajes, "%      ", sep = "")
 
-pie(tabla_acceso_espacios,
+pie(tabla_acceso_espacios_pc,
     labels = labels,
     col = c("tomato", "lightgreen"),
     # radius = 0.9,
@@ -43,7 +45,28 @@ pie(tabla_acceso_espacios,
 
 mtext("Fuente: observatorio villero", side = 1, adj = 0)
 
-tabla_acceso
+acceso_espacios_verdes <- apply(espacios_verdes, 1, function(fila) {
+  if ("No existen tales espacios" %in% fila) {
+    return("No tiene acceso")
+  } else if (any(!is.na(fila) & fila != "")) {
+    return("Tiene acceso")
+  } else {
+    return("Sin datos")
+  }
+})
+
+tabla_acceso_espacios_verdes <- table(acceso_espacios_verdes)
+porcentajes <- round(100 * tabla_acceso_espacios_verdes / sum(tabla_acceso_espacios_verdes), 1)
+labels <- paste(names(tabla_acceso_espacios_verdes), "  \n       ", porcentajes, "%      ", sep = "")
+
+pie(tabla_acceso_espacios_verdes,
+    labels = labels,
+    col = c("tomato", "lightgreen"),
+    # radius = 0.9,
+    main = "Acceso a espacios verdes")
+
+mtext("Fuente: observatorio villero", side = 1, adj = 0)
+
 
 # 
 # 
