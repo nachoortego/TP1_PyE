@@ -22,7 +22,10 @@ colnames(datos)[112] <- "acceso_bp" #tiene acceso al uso de bicicletas publicas
 espacios_pc <- datos[, paste0("espacio_pc_", 1:9)]
 espacios_verdes <- datos[, paste0("espacio_verde_", 1:4)]
 
-# Creo la columna de acceso
+
+####################################################################################
+# GRÁFICO DE TORTA: Proporción de los que tienen acceso a espacios de ejercitación # 
+####################################################################################
 acceso_espacios_pc <- apply(espacios_pc, 1, function(fila) {
   if ("No existen tales espacios" %in% fila) {
     return("No tiene acceso")
@@ -45,6 +48,9 @@ pie(tabla_acceso_espacios_pc,
 
 mtext("Fuente: observatorio villero", side = 1, adj = 0)
 
+###########################################################################
+# GRÁFICO DE TORTA: Proporción de los que tienen acceso a espacios verdes # 
+###########################################################################
 acceso_espacios_verdes <- apply(espacios_verdes, 1, function(fila) {
   if ("No existen tales espacios" %in% fila) {
     return("No tiene acceso")
@@ -69,10 +75,9 @@ mtext("Fuente: observatorio villero", side = 1, adj = 0)
 
 
 
-
-
-
-
+############################################################################
+# GRÁFICO DE BARRAS: Cantidad de personas con cada espacio de ejercitación # 
+############################################################################
 # Contar cuántas veces aparece cada tipo de espacio
 espacios_pc_vector <- unlist(espacios_pc)
 espacios_pc_vector <- espacios_pc_vector[espacios_pc_vector != "" & !is.na(espacios_pc_vector)]
@@ -89,6 +94,9 @@ barplot(frecuencias_pc,
 
 mtext("Fuente: observatorio villero", side = 1, adj = 0, line = 3, cex = 0.8)
 
+##################################################################
+# GRÁFICO DE BARRAS: Cantidad de personas con cada espacio verde # 
+##################################################################
 espacios_verdes_vector <- unlist(espacios_verdes)
 espacios_verdes_vector <- espacios_verdes_vector[espacios_verdes_vector != "" & !is.na(espacios_verdes_vector)]
 
@@ -102,6 +110,10 @@ barplot(frecuencias_verdes,
         cex.names = 0.8)
 
 mtext("Fuente: observatorio villero", side = 1, adj = 0, line = 3, cex = 0.8)
+
+
+
+
 
 # 
 # 
