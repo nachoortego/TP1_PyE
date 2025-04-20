@@ -18,7 +18,6 @@ googledrive::drive_download(as_id("1IRhvzOQkvuspQF3TAsBCI-68i8ya0_hy"),
 rango <- "B3:DN1125"
 datos <- readxl::read_excel("Datos_LP.xlsx", 
                             range = rango,
-														col_names = FALSE, 
 														skip = 3)
 
 # Veo la estructura del dataset
