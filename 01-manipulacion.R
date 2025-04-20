@@ -20,7 +20,7 @@ colnames(datos)[110] <- "frec_tp" #frecuencia del transporte publico
 colnames(datos)[112] <- "acceso_bp" #tiene acceso al uso de bicicletas publicas
 
 espacios_pc <- datos[, paste0("espacio_pc_", 1:9)]
-espacios_verdes <- datos[, paste0("espacio_verde_", 1:9)]
+espacios_verdes <- datos[, paste0("espacio_verde_", 1:4)]
 
 # Creo la columna de acceso
 acceso_espacios_pc <- apply(espacios_pc, 1, function(fila) {
@@ -67,6 +67,41 @@ pie(tabla_acceso_espacios_verdes,
 
 mtext("Fuente: observatorio villero", side = 1, adj = 0)
 
+
+
+
+
+
+
+# Contar cuántas veces aparece cada tipo de espacio
+espacios_pc_vector <- unlist(espacios_pc)
+espacios_pc_vector <- espacios_pc_vector[espacios_pc_vector != "" & !is.na(espacios_pc_vector)]
+
+frecuencias_pc <- sort(table(espacios_pc_vector), decreasing = TRUE)
+
+# Graficar
+barplot(frecuencias_pc,
+        las = 2,
+        col = "skyblue",
+        main = "Acceso a espacios de prácticas corporales",
+        ylab = "Cantidad de personas",
+        cex.names = 0.8)
+
+mtext("Fuente: observatorio villero", side = 1, adj = 0, line = 3, cex = 0.8)
+
+espacios_verdes_vector <- unlist(espacios_verdes)
+espacios_verdes_vector <- espacios_verdes_vector[espacios_verdes_vector != "" & !is.na(espacios_verdes_vector)]
+
+frecuencias_verdes <- sort(table(espacios_verdes_vector), decreasing = TRUE)
+
+barplot(frecuencias_verdes,
+        las = 2,
+        col = "lightgreen",
+        main = "Acceso a espacios verdes",
+        ylab = "Cantidad de personas",
+        cex.names = 0.8)
+
+mtext("Fuente: observatorio villero", side = 1, adj = 0, line = 3, cex = 0.8)
 
 # 
 # 
