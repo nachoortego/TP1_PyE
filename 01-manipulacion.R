@@ -3,6 +3,7 @@
 
 # Cargo los paquetes que voy a usar
 library(tidyverse)
+library(ggplot2)
 
 # Fijo el dataset
 attach(datos)
@@ -21,6 +22,42 @@ colnames(datos)[112] <- "acceso_bp" #tiene acceso al uso de bicicletas publicas
 
 espacios_pc <- datos[, paste0("espacio_pc_", 1:9)]
 espacios_verdes <- datos[, paste0("espacio_verde_", 1:4)]
+
+
+###########################################################
+# GRÁFICO DE BARRA: Frecuencias de uso de espacios verdes # 
+###########################################################
+ev <- table(uso_espacios_verdes)
+barplot(ev)
+
+####################################################################
+# GRÁFICO DE BARRA: Frecuencias de uso de espacios de ejercitación # 
+####################################################################
+ev <- table(uso_espacios_verdes)
+barplot(ev)
+
+######################################################################
+# GRÁFICO DE BARRA: Proporción promedio de mayores/menores por hogar # 
+######################################################################
+porcentaje_menores_por_hogar <- round(cant_menores/cant_integrantes * 100, 2)
+promedio_menores <- mean(porcentaje_menores_por_hogar, na.rm = TRUE)
+
+df_grafico <- data.frame(
+  categoria = c("Integrantes del hogar", "Menores"),
+  porcentaje = c(100 - promedio_menores, promedio_menores)
+)
+
+ggplot(df_grafico, aes(x = 1, y = porcentaje, fill = categoria)) +
+  geom_bar(stat = "identity", width = 1) +
+  scale_fill_manual(values = c("skyblue", "tomato")) +
+  coord_flip() + # Barra horizontal
+  labs(title = "Distribución de Integrantes y Menores por Hogar",
+       x = "",
+       y = "Porcentaje") +
+  theme_minimal() +
+  theme(axis.text.x = element_blank(), axis.ticks.x = element_blank(),
+        aspect.ratio = 1/3)  # Ajustamos la relación de aspecto para hacerla rectangular
+
 
 
 ####################################################################################
