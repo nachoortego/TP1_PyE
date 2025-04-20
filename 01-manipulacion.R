@@ -24,17 +24,157 @@ espacios_pc <- datos[, paste0("espacio_pc_", 1:9)]
 espacios_verdes <- datos[, paste0("espacio_verde_", 1:4)]
 
 
+
+ggplot(frecuencias_espacios_verdes, aes(x = espacio, y = cantidad, fill = espacio)) +
+  geom_bar(stat = "identity") +
+  labs(
+    title = "Acceso a espacios de prácticas corporales",
+    x = "Espacio",
+    y = "Cantidad de personas"
+  ) +
+  theme_minimal() +
+  scale_fill_brewer(palette = "Set2") +
+  scale_x_discrete(labels = function(x) str_wrap(x, width = 15)) +
+  theme(
+    plot.title = element_text(face = "bold", hjust = 0.5),
+    panel.grid.major = element_line(color = "gray", size = 0.3),
+    panel.grid.minor = element_line(color = "lightgray", size = 0.3),
+    legend.position = "none"
+  )
+
+
+
+################################################################################################
+# GRÁFICO DE BARRAS: Frecuancia de uso de espacios verdes en relacion a la cantidad de menores # 
+################################################################################################
+tabla_frecuencia_menores <- datos %>%
+  group_by(uso_espacios_verdes) %>%
+  summarise(promedio_menores = mean(cant_menores, na.rm = TRUE))
+
+# Paso 2: Crear el gráfico de barras
+ggplot(df_frecuencia_menores, aes(x = uso_espacios_verdes, y = promedio_menores, fill = uso_espacios_verdes)) +
+  geom_bar(stat = "identity") +
+  labs(title = "Promedio de Menores por Frecuencia de Uso de Espacios Verdes",
+       x = "Frecuencia de Uso de Espacios Verdes",
+       y = "Promedio de Menores") +
+  theme_minimal() +
+  scale_fill_brewer(palette = "Set2") +
+  scale_x_discrete(labels = function(x) str_wrap(x, width = 15)) +
+  theme(
+    plot.title = element_text(face = "bold", hjust = 0.5),
+    panel.grid.major = element_line(color = "gray", size = 0.3),
+    panel.grid.minor = element_line(color = "lightgray", size = 0.3),
+    legend.position = "none"
+  )
+
+
+
+
+
+
+
+
+
+
+
+
+##################################################
+# GRÁFICO DE TORTA: Acceso a bicicletas publicas # 
+##################################################
+tabla_acceso_bicis = datos %>%
+  group_by(acceso_bp) %>%
+  summarise(cantidad = n())
+ggplot(
+  tabla_acceso_bicis,
+  aes(x = "", y = cantidad, fill = acceso_bp)
+) +
+  geom_bar(stat = "identity") +
+  coord_polar(theta = "y") +
+  labs(title = "Distribución del acceso a bicicletas publicas") +
+  theme_void() +
+  scale_fill_brewer(palette = "Set2") +
+  theme(
+    plot.title = element_text(face = "bold", hjust = 0.5)  
+  ) 
+
+
+
+
+####################################################
+# GRÁFICO DE BARRA: Frecuencias transporte publico # 
+####################################################
+tabla_frec_tp <- datos %>%
+  group_by(frec_tp) %>%
+  summarise(cantidad = n())
+
+ggplot(
+  tabla_frec_tp, 
+  aes(x = frec_tp, y = cantidad, fill = frec_tp)
+) +
+  geom_bar(stat = "identity", show.legend = FALSE) +
+  labs(title = "Frecuencia de uso del transporte público",
+       x = "Frecuencia",
+       y = "Cantidad de personas") +
+  theme_minimal() +
+  scale_fill_brewer(palette = "Set2") +
+  scale_x_discrete(labels = function(x) str_wrap(x, width = 15)) +
+  theme(
+    plot.title = element_text(face = "bold", hjust = 0.5)) 
+
+
+
+
+
 ###########################################################
 # GRÁFICO DE BARRA: Frecuencias de uso de espacios verdes # 
 ###########################################################
-ev <- table(uso_espacios_verdes)
-barplot(ev)
+tabla_uso_espacios_verdes <- datos %>%
+  group_by(uso_espacios_verdes) %>%
+  summarise(cantidad = n())
+
+ggplot(
+  tabla_uso_espacios_verdes,
+  aes(x = uso_espacios_verdes, y = cantidad, fill = uso_espacios_verdes)
+) + 
+  geom_bar(stat = "identity", show.legend = FALSE) +
+  labs(title = "Frecuencia de uso de los espacios verdes",
+       x = "Frecuencia",
+       y = "Cantidad de personas") +
+  theme_minimal() +
+  scale_fill_brewer(palette = "Set2") +
+  scale_x_discrete(labels = function(x) str_wrap(x, width = 15)) +
+  theme(
+    plot.title = element_text(face = "bold", hjust = 0.5),
+    panel.grid.major = element_line(color = "gray", size = 0.3),  # Cuadrícula mayor
+    panel.grid.minor = element_line(color = "lightgray", size = 0.3)  # Cuadrícula menor
+  )
 
 ####################################################################
 # GRÁFICO DE BARRA: Frecuencias de uso de espacios de ejercitación # 
 ####################################################################
-ev <- table(uso_espacios_verdes)
-barplot(ev)
+tabla_uso_espacios_pc <- datos %>%
+  group_by(uso_espacios_pc) %>%
+  summarise(cantidad = n())
+
+ggplot(
+  tabla_uso_espacios_pc,
+  aes(x = uso_espacios_pc, y = cantidad, fill = uso_espacios_pc)
+) +
+  geom_bar(stat = "identity", show.legend = FALSE) +
+  labs(title = "Frecuencia de uso de los espacios de ejercitación",
+       x = "Frecuencia",
+       y = "Cantidad de personas") +
+  theme_minimal() +
+  scale_fill_brewer(palette = "Set2") +
+  scale_x_discrete(labels = function(x) str_wrap(x, width = 15)) +
+  theme(
+    plot.title = element_text(face = "bold", hjust = 0.5),
+    panel.grid.major = element_line(color = "gray", size = 0.3),  # Cuadrícula mayor
+    panel.grid.minor = element_line(color = "lightgray", size = 0.3)  # Cuadrícula menor
+  )
+  
+ee <- table(uso_espacios_pc)
+barplot(ee)
 
 ######################################################################
 # GRÁFICO DE BARRA: Proporción promedio de mayores/menores por hogar # 
@@ -115,40 +255,62 @@ mtext("Fuente: observatorio villero", side = 1, adj = 0)
 ############################################################################
 # GRÁFICO DE BARRAS: Cantidad de personas con cada espacio de ejercitación # 
 ############################################################################
-# Contar cuántas veces aparece cada tipo de espacio
 espacios_pc_vector <- unlist(espacios_pc)
-espacios_pc_vector <- espacios_pc_vector[espacios_pc_vector != "" & !is.na(espacios_pc_vector)]
+espacios_pc_vector <- espacios_pc_vector[
+  espacios_pc_vector != "" &
+    !is.na(espacios_pc_vector) &
+    espacios_pc_vector != "No existen tales espacios"
+]
 
-frecuencias_pc <- sort(table(espacios_pc_vector), decreasing = TRUE)
+frecuencias_pc <- as.data.frame(sort(table(espacios_pc_vector), decreasing = TRUE))
+colnames(frecuencias_pc) <- c("espacio", "cantidad")
 
-# Graficar
-barplot(frecuencias_pc,
-        las = 2,
-        col = "skyblue",
-        main = "Acceso a espacios de prácticas corporales",
-        ylab = "Cantidad de personas",
-        cex.names = 0.8)
-
-mtext("Fuente: observatorio villero", side = 1, adj = 0, line = 3, cex = 0.8)
+ggplot(frecuencias_pc, aes(x = espacio, y = cantidad, fill = espacio)) +
+  geom_bar(stat = "identity") +
+  labs(
+    title = "Acceso a espacios de prácticas corporales",
+    x = "Espacio",
+    y = "Cantidad de personas"
+  ) +
+  theme_minimal() +
+  scale_fill_brewer(palette = "Set2") +
+  scale_x_discrete(labels = function(x) str_wrap(x, width = 15)) +
+  theme(
+    plot.title = element_text(face = "bold", hjust = 0.5),
+    panel.grid.major = element_line(color = "gray", size = 0.3),
+    panel.grid.minor = element_line(color = "lightgray", size = 0.3),
+    legend.position = "none"
+  )
 
 ##################################################################
 # GRÁFICO DE BARRAS: Cantidad de personas con cada espacio verde # 
 ##################################################################
 espacios_verdes_vector <- unlist(espacios_verdes)
-espacios_verdes_vector <- espacios_verdes_vector[espacios_verdes_vector != "" & !is.na(espacios_verdes_vector)]
+espacios_verdes_vector <- espacios_verdes_vector[
+  espacios_verdes_vector != "" &
+    !is.na(espacios_verdes_vector) &
+    espacios_verdes_vector != "No existen tales espacios"
+]
 
-frecuencias_verdes <- sort(table(espacios_verdes_vector), decreasing = TRUE)
+frecuencias_espacios_verdes <- as.data.frame(sort(table(espacios_verdes_vector), decreasing = TRUE))
+colnames(frecuencias_espacios_verdes) <- c("espacio", "cantidad")
 
-barplot(frecuencias_verdes,
-        las = 2,
-        col = "lightgreen",
-        main = "Acceso a espacios verdes",
-        ylab = "Cantidad de personas",
-        cex.names = 0.8)
-
-mtext("Fuente: observatorio villero", side = 1, adj = 0, line = 3, cex = 0.8)
-
-
+ggplot(frecuencias_espacios_verdes, aes(x = espacio, y = cantidad, fill = espacio)) +
+  geom_bar(stat = "identity") +
+  labs(
+    title = "Acceso a espacios de prácticas corporales",
+    x = "Espacio",
+    y = "Cantidad de personas"
+  ) +
+  theme_minimal() +
+  scale_fill_brewer(palette = "Set2") +
+  scale_x_discrete(labels = function(x) str_wrap(x, width = 15)) +
+  theme(
+    plot.title = element_text(face = "bold", hjust = 0.5),
+    panel.grid.major = element_line(color = "gray", size = 0.3),
+    panel.grid.minor = element_line(color = "lightgray", size = 0.3),
+    legend.position = "none"
+  )
 
 
 
