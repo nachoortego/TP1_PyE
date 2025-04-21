@@ -104,6 +104,9 @@ ggplot(
 # GRÁFICO DE BARRA: Frecuencias transporte publico # 
 ####################################################
 tabla_frec_tp <- datos %>%
+  mutate(
+    frec_tp = factor(frec_tp, levels = c("Menos de 30 minutos entre cada colectivo","1 colectivo cada 30 minutos", "1 colectivo por hora", "1 colectivo cada dos horas"))
+  ) %>%
   group_by(frec_tp) %>%
   summarise(cantidad = n())
 
@@ -113,7 +116,7 @@ ggplot(
 ) +
   geom_bar(stat = "identity", show.legend = FALSE) +
   labs(title = "Frecuencia de uso del transporte público",
-       x = "Frecuencia",
+       x = "Frecuencia del transporte",
        y = "Cantidad de personas") +
   theme_minimal() +
   scale_fill_brewer(palette = "Set2") +
@@ -129,6 +132,9 @@ ggplot(
 # GRÁFICO DE BARRA: Frecuencias de uso de espacios verdes # 
 ###########################################################
 tabla_uso_espacios_verdes <- datos %>%
+  mutate(
+    uso_espacios_verdes = factor(uso_espacios_verdes, levels = c("No hago uso","Al menos una vez por semana", "Diario"))
+  ) %>%
   group_by(uso_espacios_verdes) %>%
   summarise(cantidad = n())
 
@@ -153,6 +159,9 @@ ggplot(
 # GRÁFICO DE BARRA: Frecuencias de uso de espacios de ejercitación # 
 ####################################################################
 tabla_uso_espacios_pc <- datos %>%
+  mutate(
+    uso_espacios_pc = factor(uso_espacios_pc, levels = c("No hago uso","Al menos una vez por semana", "Diario"))
+  ) %>%
   group_by(uso_espacios_pc) %>%
   summarise(cantidad = n())
 
