@@ -54,7 +54,6 @@ tabla_frecuencia_menores <- datos %>%
   group_by(uso_espacios_verdes) %>%
   summarise(promedio_menores = mean(cant_menores, na.rm = TRUE))
 
-# Paso 2: Crear el gráfico de barras
 ggplot(tabla_frecuencia_menores, aes(x = uso_espacios_verdes, y = promedio_menores, fill = uso_espacios_verdes)) +
   geom_bar(stat = "identity") +
   labs(title = "Promedio de Menores por Frecuencia de Uso de Espacios Verdes",
