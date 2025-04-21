@@ -11,6 +11,7 @@ attach(datos)
 ######################
 # Renombrar columnas #
 ######################
+colnames(datos)[4] <- "tiempo_residencia"
 colnames(datos)[5] <- "cant_integrantes"
 colnames(datos)[10] <- "cant_menores"
 colnames(datos)[95:103] <- paste0("espacio_pc_", 1:9) #espacios de practicas corporales y esparcimiento
@@ -40,6 +41,60 @@ ggplot(frecuencias_espacios_verdes, aes(x = espacio, y = cantidad, fill = espaci
     panel.grid.major = element_line(color = "gray", size = 0.3),
     panel.grid.minor = element_line(color = "lightgray", size = 0.3),
     legend.position = "none"
+  )
+  
+################################################################################################
+# BOXPLOT:  # 
+################################################################################################
+ggplot(datos, aes(x = tiempo_residencia, y = "a")) + 
+  geom_boxplot(fill = "#69b3a2", color = "#1f3d2e", outlier.shape = 16, outlier.colour = "#D55E00") +
+  labs(title = "Distribución del Tiempo de Residencia", x = "Tiempo de Residencia") +
+  theme_minimal() +
+  scale_y_discrete(labels = function(x) str_wrap(x, width = 15)) +
+  scale_fill_brewer(palette = "Set2") +
+  theme(
+    plot.title = element_text(face = "bold", hjust = 0.5, size = 16, color = "#4C4C4C"),
+    axis.title.x = element_text(size = 12, color = "#4C4C4C"),
+    axis.text.x = element_text(size = 10, color = "#4C4C4C"),
+    panel.grid.major = element_line(color = "gray", size = 0.3),
+    panel.grid.minor = element_line(color = "lightgray", size = 0.3),
+    panel.border = element_blank(),
+    legend.position = "none",
+    plot.margin = margin(20, 20, 20, 20)
+  )
+
+
+
+
+
+
+
+################################################################################################
+# BARRAS AGRUPADAS:  # 
+################################################################################################
+espacios_pc_con_info <- cbind(espacios_pc, datos[, c("frec_tp", "acceso_bp")])
+espacios_pc_vector <- unlist(espacios_pc)
+
+sin_espacios_pc_v <- espacios_pc_vector[espacios_pc_vector == "No existen tales espacios"]
+tabla_sin_espacios_pc <- espacios_pc_con_info %>%
+  filter(espacio_pc_8 == "No existen tales espacios") %>%
+  group_by(frec_tp, acceso_bp) %>%
+  summarise(cantidad = n(), .groups = "drop")
+
+ggplot(tabla_sin_espacios_pc, aes(x = frec_tp, y = cantidad, fill = acceso_bp)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  #geom_bar(stat = "identity") +
+  labs(
+    title = "Uso de transporte público y acceso a bicicleta\n(personas sin acceso a espacios de prácticas corporales)",
+    x = "Frecuencia de uso del transporte público",
+    y = "Cantidad de personas",
+    fill = "¿Tiene bicicleta?"
+  ) +
+  theme_minimal() +
+  scale_fill_brewer(palette = "Set2") +
+  scale_x_discrete(labels = function(x) str_wrap(x, width = 12)) +
+  theme(
+    plot.title = element_text(face = "bold", hjust = 0.5),
   )
 
 
