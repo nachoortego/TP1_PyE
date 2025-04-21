@@ -69,9 +69,9 @@ ggplot(datos, aes(x = tiempo_residencia, y = "a")) +
 
 
 
-################################################################################################
+#######################
 # BARRAS AGRUPADAS:  # 
-################################################################################################
+######################
 espacios_pc_con_info <- cbind(espacios_pc, datos[, c("frec_tp", "acceso_bp")])
 espacios_pc_vector <- unlist(espacios_pc)
 
@@ -100,7 +100,7 @@ ggplot(tabla_sin_espacios_pc, aes(x = frec_tp, y = cantidad, fill = acceso_bp)) 
 
 
 ################################################################################################
-# GRÁFICO DE BARRAS: Frecuancia de uso de espacios verdes en relacion a la cantidad de menores # 
+# GRÁFICO DE BARRAS: Frecuencia de uso de espacios verdes en relacion a la cantidad de menores # 
 ################################################################################################
 tabla_frecuencia_menores <- datos %>%
   mutate(
@@ -118,16 +118,43 @@ ggplot(tabla_frecuencia_menores, aes(x = uso_espacios_verdes, y = promedio_menor
   scale_fill_brewer(palette = "Set2") +
   scale_x_discrete(labels = function(x) str_wrap(x, width = 15)) +
   theme(
-    plot.title = element_text(face = "bold", hjust = 0.5),
-    panel.grid.major = element_line(color = "gray", size = 0.3),
-    panel.grid.minor = element_line(color = "lightgray", size = 0.3),
+    plot.title = element_text(face = "bold", hjust = 0.5, size = 20),
+    panel.grid.major = element_line(color = "gray", size = 1),
+    panel.grid.minor = element_line(color = "lightgray", size = 1),
     legend.position = "none"
   )+ coord_flip()
 
 
 
 
+###############################################################
+# Boxplot comparativo cant de menores y uso de instalaciones #
+##############################################################
 
+tabla_frecuencia_menores <- datos %>%
+  mutate(
+    uso_espacios_verdes = factor(uso_espacios_verdes, levels = c("No hago uso","Al menos una vez por semana", "Diario"))
+  ) %>%
+  group_by(uso_espacios_verdes, cant_menores) %>%
+  summarise(cantidad = n())
+
+
+
+ggplot(tabla_frecuencia_menores, aes(x = uso_espacios_verdes, y = cant_menores) ) +
+  geom_boxplot(show.legend = F, fill = "tomato") +
+  labs(title = "Distribución de uso de espacios verdes por cantidad de menores por vivienda",
+       x = "Espacios Verdes", 
+       y = "Cantidad de menores por vivienda") +
+  coord_flip() +
+  theme(
+    plot.title = element_text(face = "bold", hjust = 0.5, size = 40),
+    panel.grid.major = element_line(color = "gray", size = 1),
+    panel.grid.minor = element_line(color = "lightgray", size = 1),
+    legend.position = "none"
+  )+
+  scale_x_discrete(labels = function(x) str_wrap(x, width = 15)) +
+  scale_y_continuous(breaks = seq(0, max(tabla_frecuencia_menores$cant_menores, na.rm = TRUE), by = 1))+
+theme_light()
 
 
 
