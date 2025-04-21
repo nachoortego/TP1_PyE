@@ -48,11 +48,14 @@ ggplot(frecuencias_espacios_verdes, aes(x = espacio, y = cantidad, fill = espaci
 # GRÁFICO DE BARRAS: Frecuancia de uso de espacios verdes en relacion a la cantidad de menores # 
 ################################################################################################
 tabla_frecuencia_menores <- datos %>%
+  mutate(
+    uso_espacios_verdes = factor(uso_espacios_verdes, levels = c("No hago uso","Al menos una vez por semana", "Diario"))
+  ) %>%
   group_by(uso_espacios_verdes) %>%
   summarise(promedio_menores = mean(cant_menores, na.rm = TRUE))
 
 # Paso 2: Crear el gráfico de barras
-ggplot(df_frecuencia_menores, aes(x = uso_espacios_verdes, y = promedio_menores, fill = uso_espacios_verdes)) +
+ggplot(tabla_frecuencia_menores, aes(x = uso_espacios_verdes, y = promedio_menores, fill = uso_espacios_verdes)) +
   geom_bar(stat = "identity") +
   labs(title = "Promedio de Menores por Frecuencia de Uso de Espacios Verdes",
        x = "Frecuencia de Uso de Espacios Verdes",
@@ -65,7 +68,8 @@ ggplot(df_frecuencia_menores, aes(x = uso_espacios_verdes, y = promedio_menores,
     panel.grid.major = element_line(color = "gray", size = 0.3),
     panel.grid.minor = element_line(color = "lightgray", size = 0.3),
     legend.position = "none"
-  )
+  )+ coord_flip()
+
 
 
 
