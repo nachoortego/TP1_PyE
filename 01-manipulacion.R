@@ -25,7 +25,6 @@ espacios_pc <- datos[, paste0("espacio_pc_", 1:9)]
 espacios_verdes <- datos[, paste0("espacio_verde_", 1:4)]
 
 
-
 ggplot(frecuencias_espacios_verdes, aes(x = espacio, y = cantidad, fill = espacio)) +
   geom_bar(stat = "identity") +
   labs(
@@ -298,7 +297,6 @@ df_grafico <- data.frame(
 
 ggplot(df_grafico, aes(x = 1, y = porcentaje, fill = categoria)) +
   geom_bar(stat = "identity", width = 1) +
-  scale_fill_manual(values = c("skyblue", "tomato")) +
   coord_flip() + # Barra horizontal
   labs(title = "Distribución de integrantes y menores por vivienda",
        x = "",
@@ -306,6 +304,7 @@ ggplot(df_grafico, aes(x = 1, y = porcentaje, fill = categoria)) +
   theme_minimal() +
   scale_fill_brewer(palette = "Set2") +
   scale_x_discrete(labels = function(x) str_wrap(x, width = 15)) +
+  scale_y_continuous(breaks = seq(0, 100, 10)) +
   theme(
     plot.title = element_text(face = "bold", hjust = 0.5),
     panel.grid.major = element_line(color = "gray", size = 0.3),
