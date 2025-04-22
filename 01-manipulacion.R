@@ -536,4 +536,3 @@ labs(title = "Distribución de Integrantes y Menores por vivienda",
      # # Opción 2: por indexación
      # datos_reducido2 <-datos_orden %>%
      # 	slice(1:500)
-     
