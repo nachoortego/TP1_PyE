@@ -285,14 +285,19 @@ ggplot(df_grafico, aes(x = 1, y = porcentaje, fill = categoria)) +
   geom_bar(stat = "identity", width = 1) +
   scale_fill_manual(values = c("skyblue", "tomato")) +
   coord_flip() + # Barra horizontal
-  labs(title = "Distribución de Integrantes y Menores por Hogar",
+  labs(title = "Distribución de integrantes y menores por hogar",
        x = "",
        y = "Porcentaje") +
   theme_minimal() +
-  theme(axis.text.x = element_blank(), axis.ticks.x = element_blank(),
-        aspect.ratio = 1/3)  # Ajustamos la relación de aspecto para hacerla rectangular
-
-
+  scale_fill_brewer(palette = "Set2") +
+  scale_x_discrete(labels = function(x) str_wrap(x, width = 15)) +
+  theme(
+    plot.title = element_text(face = "bold", hjust = 0.5),
+    panel.grid.major = element_line(color = "gray", size = 0.3),
+    panel.grid.minor = element_line(color = "lightgray", size = 0.3),
+    legend.position = "none",
+    aspect.ratio = 1/3
+  )
 
 ####################################################################################
 # GRÁFICO DE TORTA: Proporción de los que tienen acceso a espacios de ejercitación # 
