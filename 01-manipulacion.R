@@ -302,53 +302,43 @@ ggplot(df_grafico, aes(x = 1, y = porcentaje, fill = categoria)) +
 ####################################################################################
 # GRÁFICO DE TORTA: Proporción de los que tienen acceso a espacios de ejercitación # 
 ####################################################################################
-acceso_espacios_pc <- apply(espacios_pc, 1, function(fila) {
-  if ("No existen tales espacios" %in% fila) {
-    return("No tiene acceso")
-  } else if (any(!is.na(fila) & fila != "")) {
-    return("Tiene acceso")
-  } else {
-    return("Sin datos")
-  }
-})
+df_acceso_pc <- as.data.frame(table(acceso_espacios_pc)) %>%
+  mutate(
+    porcentaje = round(100 * Freq / sum(Freq), 1),
+    label = paste0(acceso_espacios_pc, "\n", porcentaje, "%")
+  )
 
-tabla_acceso_espacios_pc <- table(acceso_espacios_pc)
-porcentajes <- round(100 * tabla_acceso_espacios_pc / sum(tabla_acceso_espacios_pc), 1)
-labels <- paste(names(tabla_acceso_espacios_pc), "  \n       ", porcentajes, "%      ", sep = "")
-
-pie(tabla_acceso_espacios_pc,
-    labels = labels,
-    col = c("tomato", "lightgreen"),
-    # radius = 0.9,
-    main = "Acceso a espacios de esparcimiento")
-
-mtext("Fuente: observatorio villero", side = 1, adj = 0)
-
+ggplot(df_acceso_pc, aes(x = "", y = Freq, fill = acceso_espacios_pc)) +
+  geom_bar(stat = "identity", width = 1, color = "white") +
+  coord_polar(theta = "y") +
+  geom_text(aes(label = label), position = position_stack(vjust = 0.5), color = "white", size = 5) +
+  labs(title = "Acceso a espacios de prácticas corporales \ny esparcimiento") +
+  theme_void() +
+  scale_fill_brewer(palette = "Set2") +
+  theme(
+    plot.title = element_text(face = "bold", hjust = 0.5, size = 16, margin = margin(b = -20)),
+    legend.position = "none"
+  )
 ###########################################################################
 # GRÁFICO DE TORTA: Proporción de los que tienen acceso a espacios verdes # 
 ###########################################################################
-acceso_espacios_verdes <- apply(espacios_verdes, 1, function(fila) {
-  if ("No existen tales espacios" %in% fila) {
-    return("No tiene acceso")
-  } else if (any(!is.na(fila) & fila != "")) {
-    return("Tiene acceso")
-  } else {
-    return("Sin datos")
-  }
-})
+df_acceso_ev <- as.data.frame(table(acceso_espacios_verdes)) %>%
+  mutate(
+    porcentaje = round(100 * Freq / sum(Freq), 1),
+    label = paste0(acceso_espacios_verdes, "\n", porcentaje, "%")
+  )
 
-tabla_acceso_espacios_verdes <- table(acceso_espacios_verdes)
-porcentajes <- round(100 * tabla_acceso_espacios_verdes / sum(tabla_acceso_espacios_verdes), 1)
-labels <- paste(names(tabla_acceso_espacios_verdes), "  \n       ", porcentajes, "%      ", sep = "")
-
-pie(tabla_acceso_espacios_verdes,
-    labels = labels,
-    col = c("tomato", "lightgreen"),
-    # radius = 0.9,
-    main = "Acceso a espacios verdes")
-
-mtext("Fuente: observatorio villero", side = 1, adj = 0)
-
+ggplot(df_acceso_ev, aes(x = "", y = Freq, fill = acceso_espacios_verdes)) +
+  geom_bar(stat = "identity", width = 1, color = "white") +
+  coord_polar(theta = "y") +
+  geom_text(aes(label = label), position = position_stack(vjust = 0.5), color = "white", size = 5) +
+  labs(title = "Acceso a espacios de prácticas corporales \ny esparcimiento") +
+  theme_void() +
+  scale_fill_brewer(palette = "Set2") +
+  theme(
+    plot.title = element_text(face = "bold", hjust = 0.5, size = 16, margin = margin(b = -20)),
+    legend.position = "none"
+  )
 
 
 ############################################################################
