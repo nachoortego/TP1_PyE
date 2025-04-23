@@ -2,48 +2,53 @@ library(tidyselect)
 library(janitor)
 
 # Estructura del conjunto de datos
-str(datos_limpios)
-
-# Paqueta de medidas resumen 
-summary(datos_limpios)
-summary(datos_limpios[,c(2,3,4)])
+str(datos)
 
 # Funciones para obtener medidas
-attach(datos_limpios)
+attach(datos)
 
-# Posición: tendencia central
-mean(tiempo_residencia) # Mediana
-median(tiempo_residencia) # Media aritmética
+# Cantidad total de espacios de practicas corporales a menos de 500 m
+total_espacios_pc <- sum(frecuencias_pc$cantidad)
 
-# Posición: otras
-min(altura) 
-max(altura)
-quantile(tiempo_residencia) # 5 medidas resumen
-quantile(altura, 0.9) # Otros percentiles
-sort(table(especie), decreasing = TRUE)[1] # Moda
+# Cantidad de canchas de futbol a menos de 500 m
+futbol_count <- frecuencias_pc$cantidad[frecuencias_pc$espacio == "Cancha de fútbol"]
 
-# Dispersión
-range(altura) # Valores mín y max
-max(altura) - min(altura) # Rango
+# Porcentaje de los espacios de practicas corporales que son canchas de fútbol
+porcentaje_futbol <- round(100 * futbol_count / total_espacios_pc, 1)
+
+# Cantidad total de espacios verdes a menos de 500 m
+total_espacios_verdes <- sum(frecuencias_espacios_verdes$cantidad)
+
+# Cantidad total de plazas de menos de 0.5 hectareas a menos de 500m
+placita_count <- frecuencias_espacios_verdes$cantidad[
+  frecuencias_espacios_verdes$espacio == "Placita, plazoleta, paseo (Menos de 0,5 hectáreas)"
+]
+
+# Porcentaje de los espacios verdes a menos de 500 m que son plazas de menos de 0.5 hectareas  
+porcentaje_placita <- round(100 * placita_count / total_espacios_verdes, 1)
+
+# Cantidad total de parques de mas de 5 hectareas
+parques_count <- frecuencias_espacios_verdes$cantidad[
+  frecuencias_espacios_verdes$espacio == "Parque Urbano (Más de 5 ha hectáreas)"
+]
+
+# Porcentaje de los espacios verdes a menos de 500 m que son parques de mas de 5 hectareas  
+porcentaje_parques <- round(100 * placita_count / total_espacios_verdes, 1)
+
+# Porcentaje de los que no tienen acceso a bicicletas publicas
+porcentaje_no_bp <- datos %>%
+  group_by(acceso_bp) %>%
+  summarise(cantidad = n()) %>%
+  mutate(porcentaje = round(100 * cantidad / sum(cantidad), 1)) %>%
+  filter(acceso_bp == "No") %>%
+  pull(porcentaje)
+
+
+# Promedio del tiempo de residencia
+mean(tiempo_residencia)
 sd(tiempo_residencia) # Desvío estándar
-var(altura) # Variancia
-IQR(altura) # Rango intercuartílico
-round(sd(altura)/mean(altura)*100,1) # Coeficiente de variación
 
-# Otras medidas
-var(altura,diametro) # Covariancia
-cor(altura,diametro) # Correlación
+# Mediana del tiempo de residencia y cuartiles
+median(tiempo_residencia) 
+quantile(tiempo_residencia) 
 
-# Medidas por grupos
-datos_limpios %>% group_by(especie) %>%
-  summarise(Promedio = median(altura),
-            Desv.Est. = IQR(altura),
-            Mínimo = min(altura),
-            Máximo = max(altura))
-
-# Distribuciones condicionales
-tabyl(datos_limpios, tiempo, follaje) %>%
-  adorn_totals(where = c("row", "col")) %>%
-  adorn_percentages(denominator = "row") %>%
-  adorn_pct_formatting(digits = 1) %>%
-  adorn_title(placement = "top", "Origen", "Tipo de follaje")

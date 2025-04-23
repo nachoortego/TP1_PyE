@@ -15,7 +15,7 @@ googledrive::drive_download(as_id("1IRhvzOQkvuspQF3TAsBCI-68i8ya0_hy"),
 														overwrite = T)
 
 # Cargo el archivo como .xlsx
-rango <- "B3:DN1125"
+rango <- "B3:DN1225"
 datos <- readxl::read_excel("Datos_LP.xlsx", 
                             range = rango,
 														skip = 3)

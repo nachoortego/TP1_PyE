@@ -7,135 +7,217 @@ library(tidyverse)
 library(ggplot2)
 
 # Fijo el dataset
-attach(datos_limpios)
+attach(datos)
 
-#####################
-# Gráfico de barras #
-#####################
-
+###############################################################
+# BOXPLOT: Tiempo de residencia en la vivienda actual en años # 
+###############################################################
 datos %>%
-	mutate( tiempo = factor(tiempo,
-													levels = 1:5,
-													labels = c("Menos de 2 años", "Entre 2 y 5 años",
-																		 "Entre 5 y 10 años", "Entre 10 y 20 años",
-																		 "20 años o más"))) %>%
-	ggplot() + 
-	
-	#aes(x = tiempo) + # Frecuencias absolutas
-	aes(x = reorder(tiempo, tiempo, function(x) -length(x))) + # Ordenar según frecuencia
-	#aes(x = tiempo, y = ..count.. / sum(..count..)) + # Porcentajes
-	# aes(x = reorder(tiempo, tiempo, function(x) -length(x)), 
-	#		y = ..count.. / sum(..count..)) +  # Porcentajes ordenados según frecuencia
-	#scale_y_continuous(labels = scales::percent) +    # Eje para porcentajes
-	
-	geom_bar(width = 0.75,   # Ancho de barras
-					 fill = '#7ed021',  # Color de relleno 
-					 col = "black",  # Color de línea
-					 alpha = 0.6) +  # Transparencia
-	
-	labs(y = "Cantidad de árboles", x = "Tiempo desde la plantación") + # Nombres de ejes
-	
-	ggtitle("Antigüedad de plantación de los árboles") +
-	
-	coord_flip() + # Barras horizontales o verticales
+ggplot() +
+  aes(x = tiempo_residencia, y = "a") +
+  geom_boxplot(
+    fill = "#69b3a2", 
+    color = "#1f3d2e", 
+    outlier.shape = 16, 
+    outlier.colour = "#D55E00"
+  ) +
+  labs(
+    title = "Tiempo de residencia en la vivienda actual en años", 
+    x = "Tiempo de Residencia"
+  ) +
+  theme_minimal() +
+  scale_x_continuous(
+    breaks = seq(0, max(datos$tiempo_residencia, na.rm = TRUE), by = 10)
+  ) +
+  theme(
+    plot.title = element_text(face = "bold", hjust = 0.5, size = 24, color = "#4C4C4C"),
+    axis.title.x = element_text(size = 18, color = "#4C4C4C"),
+    axis.text.x = element_text(size = 14, color = "#4C4C4C"),
+    axis.title.y = element_blank(),
+    axis.text.y = element_blank(),
+    axis.ticks.y = element_blank(),
+    panel.grid.major = element_line(color = "gray", size = 0.3),
+    panel.grid.minor = element_line(color = "lightgray", size = 0.3),
+    panel.border = element_blank(),
+    legend.position = "none",
+    plot.margin = margin(20, 20, 20, 20)
+  )
 
-	theme_classic() # Temas preconfigurados de R https://r-charts.com/ggplot2/themes/
-	
-	
+####################################################################################
+# GRÁFICO DE TORTA: Proporción de los que tienen acceso a espacios de ejercitación # 
+####################################################################################
+table(acceso_espacios_pc) %>%
+  as.data.frame() %>%
+  mutate(
+    porcentaje = round(100 * Freq / sum(Freq), 1),
+    label = paste0(acceso_espacios_pc, "\n", porcentaje, "%")
+  ) %>%
+  ggplot() +
+    aes(x = "", y = Freq, fill = acceso_espacios_pc) +
+    geom_bar(stat = "identity", width = 1, color = "white") +
+    coord_polar(theta = "y") +
+    geom_text(
+      aes(label = label), 
+      position = position_stack(vjust = 0.5), 
+      color = "white", 
+      size = 5
+    ) +
+    labs(title = "Acceso a espacios de prácticas corporales") +
+    theme_void() +
+    scale_fill_brewer(palette = "Set2") +
+    theme(
+      plot.title = element_text(face = "bold", hjust = 0.5, size = 16, margin = margin(b = -20)),
+      legend.position = "none"
+    )
 
-###########################################
-# Gráfico de barras a partir de una tabla #
-###########################################
+###########################################################################
+# GRÁFICO DE TORTA: Proporción de los que tienen acceso a espacios verdes # 
+###########################################################################
+table(acceso_espacios_verdes) %>% 
+  as.data.frame() %>%
+  mutate(
+    porcentaje = round(100 * Freq / sum(Freq), 1),
+    label = paste0(acceso_espacios_verdes, "\n", porcentaje, "%")
+  ) %>%
+  ggplot() +
+    aes(x = "", y = Freq, fill = acceso_espacios_verdes) +
+    geom_bar(stat = "identity", width = 1, color = "white") +
+    coord_polar(theta = "y") +
+    geom_text(
+      aes(label = label), 
+      position = position_stack(vjust = 0.5), 
+      color = "white", 
+      size = 5
+    ) +
+    labs(title = "\nAcceso a espacios verdes") +
+    theme_void() +
+    scale_fill_brewer(palette = "Set2") +
+    theme(
+      plot.title = element_text(face = "bold", hjust = 0.5, size = 16, margin = margin(b = -20)),
+      legend.position = "none"
+    )
+  
+####################################################################################
+# GRÁFICO DE BARRAS: Cantidad de personas con cada espacio de practicas corporales # 
+####################################################################################
+frecuencias_pc <- unlist(espacios_pc) [
+  unlist(espacios_pc) != "" &
+    !is.na(unlist(espacios_pc)) &
+    unlist(espacios_pc) != "No existen tales espacios"
+] %>% 
+  table() %>% 
+  sort(decreasing = TRUE) %>% 
+  as.data.frame() 
 
-datos_limpios %>%
-	mutate(
-		alguna = atracnosis + roya + manchas + ampollas,
-		ninguna = ifelse(alguna == 0, 1, 0)
-	) %>%
-	summarize(atracnosis = sum(atracnosis),
-						roya = sum(roya),
-						manchas = sum(manchas),
-						ampollas = sum(ampollas),
-						ninguna = sum(ninguna)) %>%
-	pivot_longer(cols = c(atracnosis, roya, manchas, ampollas, ninguna),
-							 names_to = "plaga",
-							 values_to = "cant") %>%
+colnames(frecuencias_pc) <- c("espacio", "cantidad")
 
-		ggplot(aes(x = plaga,
-						 y = cant)) + 
-	geom_bar(stat = "identity", # Argumento necesario si partimo de una tabla
-					 width = 0.75) +
-	labs(y = "Cantidad de árboles", x = "Presencia de plagas") +
-	ggtitle("Antigüedad de plantación de los árboles") +
-	coord_flip() +
-	theme_classic() # Temas preconfigurados de R https://r-charts.com/ggplot2/themes/
+frecuencias_pc %>%
+  ggplot() +
+    aes(x = espacio, y = cantidad, fill = espacio) +
+    geom_bar(stat = "identity") +
+    labs(
+      title = "Espacios de prácticas corporales a menos de 500m de la vivienda",
+      x = "Espacio",
+      y = "Cantidad de personas"
+    ) +
+    coord_flip() +
+    theme_minimal() +
+    scale_fill_brewer(palette = "Set2") +
+    scale_x_discrete(labels = function(x) str_wrap(x, width = 15)) +
+    theme(
+      plot.title = element_text(face = "bold", hjust = 0.5, size = 16, color = "#4C4C4C"),
+      axis.title.x = element_text(size = 12, color = "#4C4C4C"),
+      axis.title.y = element_text(size = 12, color = "#4C4C4C"),
+      axis.text.x = element_text(size = 10, color = "#4C4C4C"),
+      axis.text.y = element_text(size = 10, color = "#4C4C4C"),
+      panel.grid.major = element_line(color = "gray", size = 0.3),
+      panel.grid.minor = element_line(color = "lightgray", size = 0.3),
+      panel.border = element_blank(),
+      legend.position = "none",
+      plot.margin = margin(10, 10, 10, 10)
+    )
 
+##################################################################
+# GRÁFICO DE BARRAS: Cantidad de personas con cada espacio verde # 
+##################################################################
+frecuencias_espacios_verdes <- unlist(espacios_verdes) [
+  unlist(espacios_verdes) != "" &
+    !is.na(unlist(espacios_verdes)) &
+    unlist(espacios_verdes) != "No existen tales espacios"
+] %>% 
+  table() %>% 
+  sort(decreasing = TRUE) %>% 
+  as.data.frame()
 
+colnames(frecuencias_espacios_verdes) <- c("espacio", "cantidad")
 
-#######################
-# Gráfico de bastones #
-#######################
+frecuencias_espacios_verdes %>%
+  ggplot() +
+    aes(x = espacio, y = cantidad, fill = espacio) +
+    geom_bar(stat = "identity") +
+    labs(
+      title = "Cantidad de personas con espacios verdes a menos de 500m de la vivienda",
+      x = "Tipo de espacio",
+      y = "Cantidad de personas"
+    ) +
+    theme_minimal() +
+    scale_fill_brewer(palette = "Set2") +
+    scale_x_discrete(labels = function(x) str_wrap(x, width = 15)) +
+    theme(
+      plot.title = element_text(face = "bold", hjust = 0.5),
+      panel.grid.major = element_line(color = "gray", size = 0.3),
+      panel.grid.minor = element_line(color = "lightgray", size = 0.3),
+      legend.position = "none"
+    ) + 
+    coord_flip()
 
-ggplot(datos) +
-	aes(x = brotes) + 
-	geom_bar(width = 0.10) +
-	scale_x_continuous() +
-	labs(y = "Cantidad de árboles", 
-			 x = "Número de brotes nuevos")+
-	theme_classic()
+##################################################
+# GRÁFICO DE TORTA: Acceso a bicicletas publicas # 
+##################################################
+datos %>%
+  group_by(acceso_bp) %>%
+  summarise(cantidad = n()) %>%
+ggplot() +
+  aes(x = "", y = cantidad, fill = acceso_bp) +
+  geom_bar(stat = "identity") +
+  coord_polar(theta = "y") +
+  labs(title = "¿Tiene acceso al uso de bicicletas públicas?", fill = "Respuesta") +
+  theme_void() +
+  scale_fill_brewer(palette = "Set2") +
+  theme(
+    plot.title = element_text(face = "bold", hjust = 0.5) ,
+    legend.text = element_text(size = 12),
+    legend.title = element_text(size = 12, face = "bold")
+  ) 
 
+####################################################
+# GRÁFICO DE BARRA: Frecuencias transporte publico # 
+####################################################
+datos %>%
+  mutate(
+    frec_tp = factor(frec_tp, 
+        levels = 
+          c(
+            "Menos de 30 minutos entre cada colectivo",
+            "1 colectivo cada 30 minutos", 
+            "1 colectivo por hora", 
+            "1 colectivo cada dos horas"
+          )
+    )
+  ) %>%
+  group_by(frec_tp) %>%
+  summarise(cantidad = n()) %>%
+  ggplot() +
+    aes(x = frec_tp, y = cantidad, fill = frec_tp) +
+    geom_bar(stat = "identity", show.legend = FALSE) +
+    labs(
+      title = "Frecuencia de colectivos por cantidad de personas",
+      x = "Frecuencia del transporte",
+      y = "Cantidad de personas") +
+    theme_minimal() +
+    scale_fill_brewer(palette = "Set2") +
+    scale_x_discrete(labels = function(x) str_wrap(x, width = 15)) +
+    theme(
+      plot.title = element_text(face = "bold", hjust = 0.5)) +
+    coord_flip()
 
-
-
-###########
-# Boxplot #
-###########
-
-datos_limpios %>% 
-	
-	# Puedo filtrar en el mismo paso que construyo el gráfico
-	filter(especie == "Eucalipto") %>%
-	
-	ggplot() +
-	aes(x = diametro, y = "") +
-	geom_boxplot(width = 0.75, fill = "lightgray", outlier.size = 1) +
-	theme(axis.ticks.y = element_blank()) +
-	labs(y = "", x = "Diámetro (cm)") +
-	scale_x_continuous(breaks = seq(0, 250, 50))
-
-
-
-
-##############
-# Histograma #
-##############
-
-# Frecuencias absolutas
-ggplot(datos_limpios) +
-	aes(x = diametro) +
-	geom_histogram(fill = "lightgray", col = "black", 
-								 breaks = seq(0, 250, 20)) +
-	scale_x_continuous(breaks = seq(0, 250, 20)) +
-	labs(x = "Diámetro (cm)", y = "Cantidad de árboles")
-
-# Frecuencias relativas
-ggplot(datos_limpios) +
-	aes(x = diametro, y = ..count../sum(..count..)) +
-	geom_histogram(fill = "lightgray", col = "black", 
-								 breaks = seq(0, 250, 20)) +
-	scale_x_continuous(breaks = seq(0, 250, 20)) +
-	scale_y_continuous(labels = scales::percent) +
-	labs(x = "Diámetro (cm)", y = "Cantidad de árboles")
-
-
-
-##############
-# Densidades #
-##############
-
-ggplot(datos_limpios) +
-	aes(x = altura) +
-	stat_density(bw = 3, # Nivel de suavizado
-							         # El nivel por defecto puede conocerse con bw.nrd0(datos_limpios$altura)
-							 fill = "lightgray", col = "black") +
-	labs(x = "Altura (m)", y = "Densidad")
