@@ -214,15 +214,15 @@ ggplot(
   aes(x = frec_tp, y = cantidad, fill = frec_tp)
 ) +
   geom_bar(stat = "identity", show.legend = FALSE) +
-  labs(title = "Frecuencia de uso del transporte público",
+  labs(title = "Frecuencia de colectivos por cantidad de personas",
        x = "Frecuencia del transporte",
        y = "Cantidad de personas") +
   theme_minimal() +
   scale_fill_brewer(palette = "Set2") +
   scale_x_discrete(labels = function(x) str_wrap(x, width = 15)) +
   theme(
-    plot.title = element_text(face = "bold", hjust = 0.5)) 
-
+    plot.title = element_text(face = "bold", hjust = 0.5)) +
+  coord_flip()
 
 
 
@@ -297,21 +297,28 @@ df_grafico <- data.frame(
 
 ggplot(df_grafico, aes(x = 1, y = porcentaje, fill = categoria)) +
   geom_bar(stat = "identity", width = 1) +
-  coord_flip() + # Barra horizontal
-  labs(title = "Distribución de integrantes y menores por vivienda",
-       x = "",
-       y = "Porcentaje") +
+  coord_flip() +
+  labs(
+    title = "Distribución de integrantes mayores y menores a 18 años por vivienda",
+    x = "",
+    y = "Porcentaje",
+    fill = "Categoría"
+  ) +
   theme_minimal() +
-  scale_fill_brewer(palette = "Set2") +
+  scale_fill_brewer(
+    palette = "Set2",
+    labels = c("Mayores de 18", "Menores de 18")
+  ) +
   scale_x_discrete(labels = function(x) str_wrap(x, width = 15)) +
   scale_y_continuous(breaks = seq(0, 100, 10)) +
   theme(
     plot.title = element_text(face = "bold", hjust = 0.5),
     panel.grid.major = element_line(color = "gray", size = 0.3),
     panel.grid.minor = element_line(color = "lightgray", size = 0.3),
-    legend.position = "none",
+    legend.position = "right",  # Mostramos la leyenda
     aspect.ratio = 1/3
   )
+
      
   ####################################################################################
   # GRÁFICO DE TORTA: Proporción de los que tienen acceso a espacios de ejercitación # 
@@ -410,8 +417,8 @@ ggplot(df_grafico, aes(x = 1, y = porcentaje, fill = categoria)) +
      ggplot(frecuencias_espacios_verdes, aes(x = espacio, y = cantidad, fill = espacio)) +
        geom_bar(stat = "identity") +
        labs(
-         title = "Espacios verdes a menos de 500m de la vivienda",
-         x = "Espacio",
+         title = "Cantidad de personas con espacios verdes a menos de 500m de la vivienda",
+         x = "Tipo de espacio",
          y = "Cantidad de personas"
        ) +
        theme_minimal() +
