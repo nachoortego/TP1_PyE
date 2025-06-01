@@ -145,8 +145,8 @@ colnames(frecuencias_pc) <- c("espacio", "cantidad")
 frecuencias_pc %>%
   ggplot() +
     aes(x = espacio, y = cantidad, fill = espacio) +
-    geom_bar(stat = "identity") +
-    labs(
+  geom_bar(stat = "identity", fill = "#66c2a5") +
+  labs(
       title = "Espacios de prácticas corporales a menos de 500m de la vivienda",
       x = "Espacio",
       y = "Cantidad de personas"
@@ -185,8 +185,8 @@ colnames(frecuencias_espacios_verdes) <- c("espacio", "cantidad")
 frecuencias_espacios_verdes %>%
   ggplot() +
     aes(x = espacio, y = cantidad, fill = espacio) +
-    geom_bar(stat = "identity") +
-    labs(
+  geom_bar(stat = "identity", fill = "#66c2a5") +
+  labs(
       title = "Cantidad de personas con espacios verdes a menos de 500m de la vivienda",
       x = "Tipo de espacio",
       y = "Cantidad de personas"
