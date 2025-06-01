@@ -43,6 +43,37 @@ ggplot() +
     plot.margin = margin(20, 20, 20, 20)
   )
 
+
+####################################################################################
+# GRÁFICO DE TORTA: Proporción promedio de mayores/menores por hogar # 
+####################################################################################
+promedio_menores <- round(cant_menores / cant_integrantes * 100, 2) %>% mean()
+
+data.frame(
+  categoria = c("Mayores de 18", "Menores de 18"),
+  porcentaje = c(100 - promedio_menores, promedio_menores)
+) %>%
+  mutate(
+    label = paste0(categoria, "\n", round(porcentaje, 1), "%")
+  ) %>%
+  ggplot() +
+  aes(x = "", y = porcentaje, fill = categoria) +
+  geom_bar(stat = "identity", width = 1, color = "white") +
+  coord_polar(theta = "y") +
+  geom_text(
+    aes(label = label), 
+    position = position_stack(vjust = 0.5), 
+    color = "white", 
+    size = 5
+  ) +
+  labs(title = "Distribución de integrantes mayores y menores a 18 años por vivienda") +
+  theme_void() +
+  scale_fill_brewer(palette = "Set2") +
+  theme(
+    plot.title = element_text(face = "bold", hjust = 0.5, size = 16, margin = margin(b = -20)),
+    legend.position = "none"
+  )
+
 ####################################################################################
 # GRÁFICO DE TORTA: Proporción de los que tienen acceso a espacios de ejercitación # 
 ####################################################################################
